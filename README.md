@@ -1,68 +1,69 @@
-## Arduino-мобиль с управлением по Bluetooth и автономным режимом работы
+## Arduino-based car with Bluetooth control and obstacle avoidance mode.
 
 ![RC car view on front](img/car_front2.jpg) ... ![RC car view on top](img/car_top2.jpg)|
 <im src="img/car_front.jpg" alt="view on front" width="500" height="300">
 
-### Назначение
-Данный проект носит учебный характер, отдавая дань моде на радиоуправляемые модели авто, базирующиеся на популярной микроконтроллерной плате Arduino.
+### Purpose
+This project is educational in nature, paying tribute to the fashion for radio-controlled car models based on the popular Arduino microcontroller board.
 
-### Состав и структура
-Платформа модели представлет собой двухколесное шасси с двигателями постоянного тока и редукторами. Драйвер двигателей L298N подключен к источнику питания, состоящему из двух аккумуляторных элементов 18650 с суммарным напряжением 7.4V.\
- Драйвер управляет направлением и скоростью вращения двигателей и формирует выходное стабилизированное напряжение 5V для платы Arduino Nano, сенсоров, сервомотора SG-90 и OLED-дисплея 0.96" SSD1306 с разрешением 128x64 px. Для питания модуля Bluetooth JDY-31 служит вывод 3.3V платы Arduino Nano.\
-В качестве сенсоров используются ультразвуковой датчик (сонар) HC-SR04 и инфракрасные датчики скорости LM393. Кроме того, автомобиль имеет передние фары (два белых светодиода), задние стоп-сигналы (два красных светодиода), сигнальный пьезоэлемент и выключатель. Все необходимые компоненты приобретены на Aliexpress.\
-Схема соединения элементов показана ниже (см. файл *car_scheme.bmp*):
+### Composition and structure
+The model's platform is a two-wheel chassis with DC motors and gearboxes. The L298N motor driver is connected to a power source consisting of two 18650 battery cells with a total voltage of 7.4V.\
+ The driver controls the direction and speed of the motors and generates a stabilized 5V output voltage for the Arduino Nano board, sensors, SG-90 servo motor, and a 0.96" SSD1306 OLED display with a resolution of 128x64 pixels. The JDY-31 Bluetooth module is powered by the 3.3V output of the Arduino Nano board.\
+The sensors used are an HC-SR04 ultrasonic sonar sensor and LM393 infrared speed sensors. The car also has headlights (two white LEDs), rear brake lights (two red LEDs), a piezoelectric signal element, and a switch. All necessary components were purchased on Aliexpress. \
+The connection diagram for the components is shown below (see *car_scheme.bmp* file):
 
-![Схема соединения элементов](img/car_scheme.bmp)
-### Режимы работы
-Модель может функционировать в одном из двух режимов: получая команды управления от смартфона по Bluetooth, либо двигаясь в автономном режиме с обходом препятствий. Выбор режима происходит при включении питания. Если расстояние до препятствия больше критического (25 см), путь считается свободным, и автомобиль начинает движение в автономном режиме. В противном случае программа переключается в режим управления по Bluetooth, выдает сообщение на дисплей и ожидает команды от смартфона.\
-Контроллер Arduino Nano управляет всей логикой работы, а именно:
-- измерением расстояния от ультразвукового датчика до препятствия,
-- вращением сервомотора при выборе направления обхода препятствия,
-- приводом на ведущие колеса, обеспечивающем движение платформы,
-- измерением пройденного пути на основе сигналов с датчиков скорости,
-- выдачей сообщений на OLED-дисплей,
-- световой и звуковой сигнализацией.
+![Connection diagram](img/car_scheme.bmp)
+### Operating modes
+The model can operate in one of two modes: receiving control commands from a smartphone via Bluetooth, or moving autonomously and avoiding obstacles. The mode is selected upon power-up. If the distance to an obstacle is greater than the critical value (25 cm), the path is considered clear, and the car begins moving autonomously. Otherwise, the program switches to Bluetooth control mode, sends a message to the display, and waits for a command from the smartphone. \
+The Arduino Nano controller controls all the logic of the operation, namely:
+- measuring the distance from the ultrasonic sensor to the obstacle,
+- rotating the servomotor when choosing the direction of bypassing an obstacle,
+- drive to the drive wheels, ensuring the movement of the platform,
+- measuring the distance traveled based on signals from speed sensors,
+- sending messages to the OLED display,
+- light and sound signaling.
 
-### Описание программы
-Назначение используемых выводов платы Arduino Nano можно увидеть на схеме и в тексте программы *arduinobtcar.ino*, содержащем комментарии. Используются следующие библиотеки:
-- *SoftwareSerial.h* - для подключения модуля Bluetooth,
-- *Servo.h* - для управления сервомотором,
-- *Wire.h* - для подключения по интерфейсу I2C
-- *Adafruit_GFX.h, Adafruit_SSD1306.h* - для подключения OLED-дисплея SSD1306,
-- *Fonts/FreeSerif9pt7b.h* - шрифты для OLED-дисплея
+### Program description
+The purpose of the Arduino Nano board pins can be seen in the diagram and in the program text *arduinobtcar.ino*, containing comments. The following libraries are used: 
+- *SoftwareSerial.h* - to connect the Bluetooth module,
+- *Servo.h* - to control the servomotor,
+- *Wire.h* - for connection via I2C interface,
+- *Adafruit_GFX.h, Adafruit_SSD1306.h* - to connect the SSD1306 OLED display,
+- *Fonts/FreeSerif9pt7b.h* - fonts for OLED displays.
 
-Процедура настройки setup состоит из следующих операций:
-- инициализация пинов;
-- инициализация виртуального серийного порта для модуля Bluetooth;
-- настройка сервопривода;
-- инициализация OLED-дисплея;
-- настройка внешних прерываний по сигналам датчиков скорости.
+The setup procedure consists of the following operations:
+- initialization of pins;
+- initialization of virtual serial port for Bluetooth module;
+- servo adjustment;
+- OLED display initialization;
+- setting up external interrupts based on speed sensor signals.
 
-Использование внешних прерываний\
-Датчик скорости правого колеса используется для измерения пройденного пути. Сравнение значений счетчиков импульсов, сформированных датчиками скорости обоих колес при прямолинейном движении, позволяет оценить степень неравномерности их вращения. Измеренные значения отображаются на экране OLED-дисплея.\
-При полном обороте колеса 20 слотов на диске датчика формируют 20 импульсов (или 20 передних + 20 задних фронтов импульсов = 40 прерываний).
-Каждое прерывание вызывает процедуру обработки прерывания *Right_ISR()* или *Left_ISR()*, соответственно, по фронту сигнала с правого или левого колеса. При движении автомобиля вперед (и соответствующем направлении вращения колес) счетчики инкрементируются.\
-Значение стандартной функции *millis()* инкрементируется каждую миллисекунду, начиная со времени включения питания. Если при очередном прерывании сохранить значение функции *millis()* в переменной prevtime, а через 40 прерываний (полный оборот колеса) вновь вызвать эту функцию, то можно вычислить:
-- период вращения колеса (интервал, за который колесо делает полный оборот) в милисекундах:\
+#### Using external interrupts
+The right wheel speed sensor is used to measure the distance traveled. Comparing the pulse counter values ​​generated by both wheel speed sensors during straight-line travel allows one to assess the degree of unevenness in their rotation. The measured values ​​are displayed on the OLED screen.\
+During a full wheel revolution, 20 slots on the sensor disk generate 20 pulses (or 20 leading + 20 trailing edges of pulses = 40 interruptions).
+Each interrupt calls the *Right_ISR()* or *Left_ISR()* interrupt service routine, respectively, on the edge of the signal from the right or left wheel. As the vehicle moves forward (and the corresponding wheel rotation direction), the counters increment.\
+The value of the standard *millis()* function is incremented every millisecond, starting from the time the power is turned on. If, at the next interrupt, the value of the *millis()* function is saved in the *prevtime* variable, and then called again after 40 interrupts (a full rotation of the wheel), the following can be calculated:
+- wheel rotation period (the interval during which the wheel makes a full revolution) in milliseconds:\
   *timetaken = millis() - prevtime;* 
-- число оборотов в минуту:\
+- number of revolutions per minute:\
   *rpm = (1000/timetaken) * 60*;
-- длину пройденного пути в сантиметрах:\
+- length of the path traveled in centimeters:\
   *traveled_distance = 6.283 * RADIUS_OF_WHEEL * revolution,*\
-  где: *revolution* - число полных оборотов колеса, *RADIUS_OF_WHEEL* - радиус колеса.
+  где: *revolution* - number of complete wheel revolutions, *RADIUS_OF_WHEEL* - wheel radius.
 
-Перечислим назначение остальных функций:
-- *showCounters* и *showSonarDistance* - отображение на дисплее расчетных показателей;
-- *sonar_distance* - определение дистанции до препятствия с помощью ультразвукового датчика без использования внешних библиотек;
-- *launch* - начало движения до встречи с препятствием;
+Let us list the purposes of the remaining functions:
+- *showCounters* и *showSonarDistance* - display of calculated values ​​on the screen;
+- *sonar_distance* - determining the distance to an obstacle using an ultrasonic sensor without using external libraries;
+- *launch* - starting to move before encountering an obstacle;
 - *rollBack* - откат назад;
-- *execute* - выполнение команды, полученной по Bluetooth;
-- *RMgo, LMgo, RMback, LMback, Stop* - варианты работы моторов;
-- *sayBeep, bee, boo* - звуковые сигналы.
+- *execute* - executing a command received via Bluetooth;
+- *RMgo, LMgo, RMback, LMback, Stop* - motor operating options;
+- *sayBeep, bee, boo* - sound signals.
 
-Подробности реализации можно узнать, читая комментарии к тексту программы.
+Implementation details can be found by reading the comments to the program text.
 
-### Мобильное приложение
-Для управления моделью автомобиля с помощью смартфона требуется установить мобильное приложение Bluetooth. Такое приложение для Android можно скачать, например здесь:\
+### Mobile application
+To control the car model using a smartphone, you need to install a Bluetooth mobile app.
+Such an app for Android can be downloaded, for example, here:
 https://bluetooth-rc-car.en.softonic.com/android?ex=RAMP-3864.5&rex=true.  
-Не забудьте включить интерфейс Bluetooth в настройках смартфона.
+Don't forget to enable the Bluetooth interface in your smartphone settings.

@@ -1,6 +1,6 @@
 ## Arduino-мобиль с управлением по Bluetooth и автономным режимом работы
 
-![RC car view on front](img/car_front2.jpg) ... ![RC car view on top](img/car_top2.jpg)|
+![RC car view on front](img/car_front2.jpg) ... ![RC car view on top](img/car_top2.jpg)
 <im src="img/car_front.jpg" alt="view on front" width="500" height="300">
 
 ### Назначение

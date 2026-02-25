@@ -1,6 +1,6 @@
 ## Arduino-based car with Bluetooth control and obstacle avoidance mode.
 
-![RC car view on front](img/car_front2.jpg) ... ![RC car view on top](img/car_top2.jpg)|
+![RC car view on front](img/car_front2.jpg) ... ![RC car view on top](img/car_top2.jpg)
 <im src="img/car_front.jpg" alt="view on front" width="500" height="300">
 
 ### Purpose
@@ -49,7 +49,7 @@ The value of the standard *millis()* function is incremented every millisecond, 
   *rpm = (1000/timetaken) * 60*;
 - length of the path traveled in centimeters:\
   *traveled_distance = 6.283 * RADIUS_OF_WHEEL * revolution,*\
-  где: *revolution* - number of complete wheel revolutions, *RADIUS_OF_WHEEL* - wheel radius.
+  where: *revolution* - number of complete wheel revolutions, *RADIUS_OF_WHEEL* - wheel radius.
 
 Let us list the purposes of the remaining functions:
 - *showCounters* и *showSonarDistance* - display of calculated values ​​on the screen;
